@@ -1,0 +1,44 @@
+# NanoJEPA — quick smoke config (~15 min on a laptop GPU/MPS).
+# 500 episodes, 10 epochs. Use for the tutorial and the collapse experiment.
+env:
+  name: swm/FetchPush-v3
+  image_size: 64
+  num_episodes: 500
+  max_steps: 50
+
+model:
+  patch_size: 8
+  embed_dim: 192
+  encoder_depth: 6
+  encoder_heads: 3
+  predictor_depth: 4
+  predictor_heads: 3
+
+masking:
+  num_targets: 4
+  target_scale: [0.15, 0.2]
+  target_aspect_ratio: [0.75, 1.5]
+  min_context_patches: 16
+
+training:
+  epochs: 10
+  batch_size: 128
+  lr: 1.0e-3
+  lr_min: 1.0e-5
+  warmup_epochs: 2
+  weight_decay_start: 0.04
+  weight_decay_end: 0.1
+  ema_momentum_start: 0.996
+  ema_momentum_end: 1.0
+  grad_clip: 1.0
+  variance_weight: 1.0
+  covariance_weight: 0.04
+  vicreg: true          # toggle with --no-vicreg to watch the collapse
+  log_every: 50
+  save_every: 5
+  mps_cache_every: 50
+
+data:
+  path: nanojepa_fetchpush_quick.lance
+  num_workers: 0
+  pin_memory: false

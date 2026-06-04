@@ -76,6 +76,20 @@ where $\lambda$ is the only hyperparameter.
 | OGB Cube | 74% | NA |
 
 
+## NanoJEPA
+
+NanoJEPA is an educational, from-scratch multimodal JEPA designed as a teaching companion to the other baselines: it is meant to be read top to bottom to learn how a JEPA predicts in embedding space, why it would collapse, and how the collapse is prevented. A Vision Transformer encoder is trained **from scratch** (no pretrained backbone) jointly with a predictor over fused vision + proprioception embeddings, an exponential moving average (EMA) target encoder provides the prediction targets, and a **toggleable** VICReg term ([variance-covariance regularization](https://arxiv.org/pdf/2105.04906)) prevents representational collapse. The `--no-vicreg` switch zeros the variance/covariance weights so the collapse can be observed directly, making NanoJEPA a controlled study of the single mechanism the collapse experiment hinges on.
+
+This is the key contrast with the other JEPA baselines: DINO-WM (PreJEPA) freezes a pretrained DINOv2 backbone, PLDM and LeWM train from scratch but **without** an EMA target encoder, whereas NanoJEPA is the from-scratch + EMA + VICReg teaching case. See the [`docs/tutorial/nanojepa/`](tutorial/nanojepa/) curriculum for the step-by-step walkthrough and [`scripts/train/nanojepa.py`](https://github.com/galilai-group/stable-worldmodel/tree/main/scripts/train/nanojepa.py) for the training entry point.
+
+### Training Objective
+
+The model is trained with a teacher-forcing prediction loss between the predicted next-state embedding $\hat{z}_{t+1}$ and the EMA target embedding $z_{t+1}$, optionally regularized by VICReg variance and covariance terms:
+
+$$ \mathcal{L}_{\text{NanoJEPA}} = \mathcal{L}_{\text{sim}} + \alpha \mathcal{L}_{\text{std}} + \beta \mathcal{L}_{\text{cov}} $$
+
+where $z_{t+1}$ is produced by the EMA target encoder (detached), and $\alpha$, $\beta$ are the variance/covariance weights (set to $0$ under `--no-vicreg`).
+
 ## TD-MPC2
 
 TD-MPC2 (TDMPC2) is a model-based reinforcement learning algorithm introduced by [Hansen et al., 2023](https://arxiv.org/pdf/2310.16828). It jointly learns a latent dynamics model, a reward predictor, an ensemble of Q-functions, and a stochastic actor. At test time, optimal actions are found by planning with MPPI/CEM using the Q-functions as a cost signal, while the actor provides warm-start initializations for the solver (via the Actionable protocol).

@@ -32,10 +32,16 @@ nav:
       - guides/checkpoints.md
       - guides/online_learning.md
   - cli.md
-  # - Tutorial:
-  #     - tutorial/collect_data.md
-  #     - tutorial/new_env.md
-  #     - tutorial/training_wm.md
+  - Tutorial:
+      # - tutorial/collect_data.md
+      # - tutorial/new_env.md
+      # - tutorial/training_wm.md
+      - NanoJEPA:
+          - tutorial/nanojepa/1_env_and_data.md
+          - tutorial/nanojepa/2_model.md
+          - tutorial/nanojepa/3_train_and_collapse.md
+          - tutorial/nanojepa/4_evaluate.md
+          - tutorial/nanojepa/5_planning.md
   - API:
       - api/world.md
       - api/policy.md
